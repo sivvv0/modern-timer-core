@@ -11,6 +11,7 @@ on:
   workflow_dispatch:
 
 jobs:
+  # Step 1: Run tests on multiple Node versions
   test:
     runs-on: ubuntu-24.04
     strategy:
@@ -39,10 +40,33 @@ jobs:
       - name: Build package (if needed)
         run: npm run build --if-present || true
 
-  publish-npm:
+  # Step 2: Check if all tests passed before publishing
+  check-tests:
     needs: test
     runs-on: ubuntu-24.04
-    if: github.event_name == 'release' || github.event_name == 'workflow_dispatch'
+    if: always()
+    outputs:
+      tests-passed: ${{ steps.check.outputs.passed }}
+    steps:
+      - name: Check test results
+        id: check
+        run: |
+          if [ "${{ needs.test.result }}" == "success" ]; then
+            echo "passed=true" >> $GITHUB_OUTPUT
+            echo "✅ All tests passed!"
+          else
+            echo "passed=false" >> $GITHUB_OUTPUT
+            echo "❌ Tests failed! Publishing will be skipped."
+            exit 1
+          fi
+
+  # Step 3: Publish to npm (only if tests passed)
+  publish-npm:
+    needs: [test, check-tests]
+    runs-on: ubuntu-24.04
+    if: |
+      (github.event_name == 'release' || github.event_name == 'workflow_dispatch') &&
+      needs.check-tests.outputs.tests-passed == 'true'
     
     steps:
       - uses: actions/checkout@v4
@@ -71,33 +95,14 @@ jobs:
             LICENSE
           generate_release_notes: true
 
-  publish-gpr:
-    needs: test
-    runs-on: ubuntu-24.04
-    if: github.event_name == 'release' || github.event_name == 'workflow_dispatch'
-    
-    steps:
-      - uses: actions/checkout@v4
-      
-      - name: Use Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '24.x'
-          registry-url: 'https://npm.pkg.github.com'
-          scope: '@yourusername'
-      
-      - name: Install dependencies
-        run: npm install --no-package-lock
-      
-      - name: Publish to GitHub Packages
-        run: npm publish --access public
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
+  # Step 4: Dry run on main branch pushes (only if tests passed)
   publish-dry-run:
-    needs: test
+    needs: [test, check-tests]
     runs-on: ubuntu-24.04
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    if: |
+      github.event_name == 'push' && 
+      github.ref == 'refs/heads/main' &&
+      needs.check-tests.outputs.tests-passed == 'true'
     
     steps:
       - uses: actions/checkout@v4
@@ -116,22 +121,36 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
+  # Step 5: Notify about publish status
   notify:
-    needs: [publish-npm, publish-gpr]
+    needs: [publish-npm, check-tests]
     runs-on: ubuntu-24.04
-    if: always() && (github.event_name == 'release' || github.event_name == 'workflow_dispatch')
+    if: |
+      always() && 
+      (github.event_name == 'release' || github.event_name == 'workflow_dispatch')
     
     steps:
+      - name: Check if tests passed
+        id: check
+        run: |
+          if [ "${{ needs.check-tests.outputs.tests-passed }}" == "false" ]; then
+            echo "status=failed" >> $GITHUB_OUTPUT
+            echo "❌ Tests failed - no packages published"
+          fi
+      
       - name: Notify on success
-        if: needs.publish-npm.result == 'success' && needs.publish-gpr.result == 'success'
+        if: needs.publish-npm.result == 'success' && needs.check-tests.outputs.tests-passed == 'true'
         run: |
           echo "✅ Package published successfully!"
           echo "📦 npm: https://www.npmjs.com/package/modern-timer-core"
-          echo "📦 GitHub: https://github.com/${{ github.repository }}/packages"
       
       - name: Notify on failure
-        if: needs.publish-npm.result == 'failure' || needs.publish-gpr.result == 'failure'
+        if: needs.publish-npm.result == 'failure' || needs.check-tests.outputs.tests-passed == 'false'
         run: |
           echo "❌ Package publishing failed!"
-          echo "Check the workflow logs for details."
+          if [ "${{ needs.check-tests.outputs.tests-passed }}" == "false" ]; then
+            echo "💡 Tests failed. Please fix the tests and try again."
+          else
+            echo "Check the workflow logs for details."
+          fi
           exit 1
