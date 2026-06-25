@@ -224,23 +224,23 @@ describe('ModernTimerCore', () => {
       expect(stats.total).toBe(3);
     });
 
-    test('should track execution statistics', async () => {
+    test('should track execution statistics', () => {
       const callback = jest.fn();
       
-      // Use real timers for this test
-      jest.useRealTimers();
+      // Create timer with fake timers
+      timerCore.createTimeout(() => {
+        callback();
+      }, 1000);
       
-      await new Promise((resolve) => {
-        timerCore.createTimeout(() => {
-          callback();
-          const stats = timerCore.getStats();
-          expect(stats.totalExecuted).toBe(1);
-          resolve();
-        }, 100);
-      });
+      // Fast-forward time
+      jest.advanceTimersByTime(1000);
       
-      // Switch back to fake timers for other tests
-      jest.useFakeTimers();
+      // Verify callback was called
+      expect(callback).toHaveBeenCalled();
+      
+      // Check stats
+      const stats = timerCore.getStats();
+      expect(stats.totalExecuted).toBe(1);
     });
   });
 
