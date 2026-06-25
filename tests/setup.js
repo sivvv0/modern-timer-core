@@ -20,7 +20,7 @@ beforeEach(() => {
 afterEach(() => {
   jest.clearAllTimers();
   jest.clearAllMocks();
-  jest.useRealTimers();
+  // Don't use real timers here to avoid conflicts
 });
 
 // Restore real timers after all tests
