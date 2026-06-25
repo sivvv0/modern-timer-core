@@ -1,0 +1,14 @@
+node_modules/
+npm-debug.log
+coverage/
+.nyc_output/
+.DS_Store
+*.log
+.env
+dist/
+*.swp
+*.swo
+timers-data.json
+timers.json
+.vscode/
+.idea/
