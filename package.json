@@ -1,0 +1,44 @@
+{
+  "name": "modern-timer-core",
+  "version": "0.0.1",
+  "description": "Advanced timer management for Discord.js v13 and v14 with setInterval, setTimeout, setImmediate support",
+  "main": "src/index.js",
+  "types": "src/types/index.d.ts",
+  "scripts": {
+    "test": "jest",
+    "build": "npm run build:types",
+    "build:types": "tsc --emitDeclarationOnly",
+    "prepublishOnly": "npm test"
+  },
+  "keywords": [
+    "discord",
+    "discord.js",
+    "timer",
+    "setinterval",
+    "settimeout",
+    "setimmediate",
+    "discord-v13",
+    "discord-v14",
+    "modern-timer"
+  ],
+  "author": "Your Name",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/sivvv0/modern-timer-core"
+  },
+  "bugs": {
+    "url": "https://github.com/sivvv0/modern-timer-core/issues"
+  },
+  "homepage": "https://github.com/sivvv0/modern-timer-core#readme",
+  "peerDependencies": {
+    "discord.js": "^13.0.0 || ^14.0.0"
+  },
+  "devDependencies": {
+    "discord.js": "^14.14.1",
+    "jest": "^29.7.0"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  }
+}
