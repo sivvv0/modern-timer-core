@@ -512,7 +512,7 @@ const timerCore = new ModernTimerCore(client, {
 
 📊 Performance Considerations
 
-· Memory: The package is optimized for memory efficiency. Each timer uses minimal memory overhead.
-· CPU: Worker pool can be used for CPU-intensive tasks to avoid blocking the event loop.
-· Scalability: Supports thousands of simultaneous timers with proper resource management.
-· Cleanup: Auto-cleanup prevents memory leaks from expired timers.
+* Memory: The package is optimized for memory efficiency. Each timer uses minimal memory overhead.
+* CPU: Worker pool can be used for CPU-intensive tasks to avoid blocking the event loop.
+* Scalability: Supports thousands of simultaneous timers with proper resource management.
+* Cleanup: Auto-cleanup prevents memory leaks from expired timers.
