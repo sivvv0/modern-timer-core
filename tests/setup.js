@@ -13,7 +13,10 @@ jest.setTimeout(30000);
 
 // Use fake timers for all tests
 beforeEach(() => {
-  jest.useFakeTimers();
+  jest.useFakeTimers({
+    doNotFake: ['nextTick', 'setImmediate'],
+    timerLimit: 1000
+  });
 });
 
 // Clean up after each test
