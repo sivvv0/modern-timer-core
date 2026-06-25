@@ -34,6 +34,7 @@ describe('ModernTimerCore', () => {
     if (timerCore) {
       timerCore.destroy();
     }
+    jest.clearAllTimers();
   });
 
   describe('Timer Creation', () => {
@@ -223,14 +224,23 @@ describe('ModernTimerCore', () => {
       expect(stats.total).toBe(3);
     });
 
-    test('should track execution statistics', (done) => {
+    test('should track execution statistics', async () => {
       const callback = jest.fn();
-      timerCore.createTimeout(() => {
-        callback();
-        const stats = timerCore.getStats();
-        expect(stats.totalExecuted).toBe(1);
-        done();
-      }, 100);
+      
+      // Use real timers for this test
+      jest.useRealTimers();
+      
+      await new Promise((resolve) => {
+        timerCore.createTimeout(() => {
+          callback();
+          const stats = timerCore.getStats();
+          expect(stats.totalExecuted).toBe(1);
+          resolve();
+        }, 100);
+      });
+      
+      // Switch back to fake timers for other tests
+      jest.useFakeTimers();
     });
   });
 
