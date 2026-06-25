@@ -3,8 +3,6 @@ modern-timer-core
 Advanced timer management for Discord.js bots with full support for v13 and v14
 
 
-A comprehensive, feature-rich timer management system designed specifically for Discord.js bots. With support for both v13 and v14, this package provides enterprise-grade timer functionality with advanced features like persistence, metrics, retry logic, and parallel execution.
-
 ✨ Features
 
 Core Features
