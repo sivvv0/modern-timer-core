@@ -80,7 +80,9 @@
   ],
   "jest": {
     "testEnvironment": "node",
-    "testMatch": ["**/tests/**/*.test.js"],
+    "testMatch": [
+      "**/tests/**/*.test.js"
+    ],
     "collectCoverageFrom": [
       "src/**/*.js",
       "!src/**/*.d.ts",
@@ -95,11 +97,23 @@
         "statements": 40
       }
     },
-    "coverageReporters": ["text", "lcov", "html"],
+    "coverageReporters": [
+      "text",
+      "lcov",
+      "html"
+    ],
     "verbose": true,
     "testTimeout": 30000,
-    "setupFilesAfterEnv": ["<rootDir>/tests/setup.js"],
-    "testPathIgnorePatterns": ["/node_modules/", "/examples/"],
-    "moduleFileExtensions": ["js", "json"]
+    "setupFilesAfterEnv": [
+      "<rootDir>/tests/setup.js"
+    ],
+    "testPathIgnorePatterns": [
+      "/node_modules/",
+      "/examples/"
+    ],
+    "moduleFileExtensions": [
+      "js",
+      "json"
+    ]
   }
 }
