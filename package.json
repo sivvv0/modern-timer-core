@@ -32,7 +32,7 @@
     "rate-limit"
   ],
   "author": "s1vann sivandev@tuta.io",
-  "license": "MIT",
+  "license": "Apache",
   "peerDependencies": {
     "discord.js": "^13.0.0 || ^14.0.0"
   },
