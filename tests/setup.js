@@ -11,8 +11,10 @@ global.console = {
 // Increase timeout for async tests
 jest.setTimeout(30000);
 
-// Use fake timers by default
-jest.useFakeTimers();
+// Use fake timers for all tests
+beforeEach(() => {
+  jest.useFakeTimers();
+});
 
 // Clean up after each test
 afterEach(() => {
@@ -20,7 +22,7 @@ afterEach(() => {
   jest.clearAllMocks();
 });
 
-// Clean up after all tests
+// Restore real timers after all tests
 afterAll(() => {
   jest.useRealTimers();
 });
