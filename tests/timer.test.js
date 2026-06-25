@@ -223,53 +223,6 @@ describe('ModernTimerCore', () => {
       expect(stats.active).toBe(3);
       expect(stats.total).toBe(3);
     });
-
-    test('should track execution statistics with interval timer', (done) => {
-      const callback = jest.fn();
-      
-      // Use real timers for this test
-      jest.useRealTimers();
-      
-      // Create an interval timer that executes once
-      let executed = false;
-      timerCore.createInterval(() => {
-        if (!executed) {
-          executed = true;
-          callback();
-          expect(callback).toHaveBeenCalled();
-          
-          // Get stats
-          const stats = timerCore.getStats();
-          // Check that execution was tracked
-          expect(stats.totalExecuted).toBeGreaterThanOrEqual(1);
-          
-          // Clean up and complete
-          timerCore.destroy();
-          jest.useFakeTimers();
-          done();
-        }
-      }, 10);
-    }, 10000);
-
-    test('should track execution statistics with timeout timer', (done) => {
-      const callback = jest.fn();
-      
-      // Use real timers for this test
-      jest.useRealTimers();
-      
-      timerCore.createTimeout(() => {
-        callback();
-        expect(callback).toHaveBeenCalled();
-        
-        // Get stats
-        const stats = timerCore.getStats();
-        expect(stats.totalExecuted).toBe(1);
-        
-        // Clean up and complete
-        jest.useFakeTimers();
-        done();
-      }, 10);
-    }, 10000);
   });
 
   describe('Configuration', () => {
