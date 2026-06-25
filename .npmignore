@@ -1,0 +1,16 @@
+node_modules/
+tests/
+examples/
+.git/
+.eslintrc
+.prettierrc
+*.log
+.DS_Store
+coverage/
+.nyc_output/
+.vscode/
+.idea/
+*.swp
+*.swo
+timers-data.json
+timers.json
