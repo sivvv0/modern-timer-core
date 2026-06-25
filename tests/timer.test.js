@@ -228,17 +228,22 @@ describe('ModernTimerCore', () => {
       const callback = jest.fn();
       
       // Create timer with fake timers
-      timerCore.createTimeout(() => {
+      const timer = timerCore.createTimeout(() => {
         callback();
       }, 1000);
+      
+      // Ensure timer is active
+      expect(timer.isActive).toBe(true);
+      expect(timerCore.getAllTimers()).toHaveLength(1);
       
       // Fast-forward time
       jest.advanceTimersByTime(1000);
       
       // Verify callback was called
       expect(callback).toHaveBeenCalled();
+      expect(callback).toHaveBeenCalledTimes(1);
       
-      // Check stats
+      // Check stats - the timer should have executed
       const stats = timerCore.getStats();
       expect(stats.totalExecuted).toBe(1);
     });
